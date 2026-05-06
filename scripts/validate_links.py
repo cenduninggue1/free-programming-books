@@ -28,10 +28,11 @@ SKIP_DOMAINS = {
     "facebook.com",
     "twitter.com",   # also blocks bots consistently
     "x.com",         # same as above, new domain
+    "reddit.com",    # personal addition: reddit rate-limits bots aggressively
 }
 
-DEFAULT_TIMEOUT = 15  # increased from 10s — some mirrors are slow to respond
-DEFAULT_CONCURRENCY = 20
+DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
+DEFAULT_CONCURRENCY = 10  # reduced from 20 — be a bit more polite to servers
 
 
 def extract_links(filepath: Path) -> list[tuple[int, str, str]]:
@@ -96,11 +97,4 @@ async def check_url(
                 ) as resp:
                     return url, resp.status, None
             except Exception as inner_exc:
-                return url, None, str(inner_exc)
-        return url, exc.status, str(exc)
-    except Exception as exc:
-        return url, None, str(exc)
-
-
-async def validate_file(
- 
+                return url, None, 
