@@ -30,6 +30,7 @@ SKIP_DOMAINS = {
     "x.com",         # same as above, new domain
     "reddit.com",    # personal addition: reddit rate-limits bots aggressively
     "medium.com",    # added: medium returns 200 for paywalled content anyway
+    "researchgate.net",  # also blocks bots; returns 403 almost always
 }
 
 DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
@@ -93,6 +94,4 @@ async def check_url(
                     url,
                     headers=headers,
                     timeout=aiohttp.ClientTimeout(total=timeout),
-                    allow_redirects=True,
-                    ssl=False,
-          
+     
