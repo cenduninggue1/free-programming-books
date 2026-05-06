@@ -26,9 +26,11 @@ SKIP_DOMAINS = {
     "web.archive.org",
     "linkedin.com",
     "facebook.com",
+    "twitter.com",   # also blocks bots consistently
+    "x.com",         # same as above, new domain
 }
 
-DEFAULT_TIMEOUT = 10  # seconds
+DEFAULT_TIMEOUT = 15  # increased from 10s — some mirrors are slow to respond
 DEFAULT_CONCURRENCY = 20
 
 
@@ -101,58 +103,4 @@ async def check_url(
 
 
 async def validate_file(
-    filepath: Path,
-    concurrency: int = DEFAULT_CONCURRENCY,
-    timeout: int = DEFAULT_TIMEOUT,
-) -> list[dict]:
-    """Validate all links in a markdown file and return a list of issues."""
-    links = extract_links(filepath)
-    issues = []
-
-    connector = aiohttp.TCPConnector(limit=concurrency)
-    async with aiohttp.ClientSession(connector=connector) as session:
-        sem = asyncio.Semaphore(concurrency)
-
-        async def bounded_check(lineno, text, url):
-            if should_skip(url):
-                return
-            async with sem:
-                _, status, error = await check_url(session, url, timeout)
-            if error:
-                issues.append({"file": str(filepath), "line": lineno, "url": url, "status": None, "error": error})
-            elif status not in VALID_STATUS_CODES:
-                issues.append({"file": str(filepath), "line": lineno, "url": url, "status": status, "error": None})
-
-        await asyncio.gather(*(bounded_check(ln, t, u) for ln, t, u in links))
-
-    return issues
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Validate links in markdown files.")
-    parser.add_argument("files", nargs="+", type=Path, help="Markdown files to check")
-    parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT, help="Request timeout in seconds")
-    parser.add_argument("--concurrency", type=int, default=DEFAULT_CONCURRENCY, help="Max concurrent requests")
-    args = parser.parse_args()
-
-    all_issues = []
-    for filepath in args.files:
-        if not filepath.exists():
-            print(f"WARNING: {filepath} does not exist, skipping.", file=sys.stderr)
-            continue
-        issues = asyncio.run(validate_file(filepath, args.concurrency, args.timeout))
-        all_issues.extend(issues)
-
-    if all_issues:
-        print(f"\nFound {len(all_issues)} broken link(s):\n")
-        for issue in all_issues:
-            status_info = f"HTTP {issue['status']}" if issue["status"] else issue["error"]
-            print(f"  {issue['file']}:{issue['line']} [{status_info}] {issue['url']}")
-        sys.exit(1)
-    else:
-        print("All links are valid.")
-        sys.exit(0)
-
-
-if __name__ == "__main__":
-    main()
+ 
