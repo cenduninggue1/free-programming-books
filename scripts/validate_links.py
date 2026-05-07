@@ -34,6 +34,7 @@ SKIP_DOMAINS = {
     "academia.edu",  # added: consistently returns 403 for automated requests
     "quora.com",     # added: quora redirects bots to login page, not useful to check
     "stackoverflow.com",  # added: rate-limits heavily during bulk checks
+    "geeksforgeeks.org",  # added: frequently returns 403 for headless requests
 }
 
 DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
@@ -89,5 +90,3 @@ async def check_url(
         ) as resp:
             if resp.status == 405:  # Method Not Allowed — retry with GET
                 raise aiohttp.ClientResponseError(resp.request_info, resp.history, status=405)
-            return url, resp.status, None
-    except aiohttp.ClientRespons
