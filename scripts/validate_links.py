@@ -31,6 +31,7 @@ SKIP_DOMAINS = {
     "reddit.com",    # personal addition: reddit rate-limits bots aggressively
     "medium.com",    # added: medium returns 200 for paywalled content anyway
     "researchgate.net",  # also blocks bots; returns 403 almost always
+    "academia.edu",  # added: consistently returns 403 for automated requests
 }
 
 DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
@@ -93,5 +94,3 @@ async def check_url(
                 async with session.get(
                     url,
                     headers=headers,
-                    timeout=aiohttp.ClientTimeout(total=timeout),
-     
