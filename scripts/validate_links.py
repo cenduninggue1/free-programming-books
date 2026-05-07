@@ -32,6 +32,7 @@ SKIP_DOMAINS = {
     "medium.com",    # added: medium returns 200 for paywalled content anyway
     "researchgate.net",  # also blocks bots; returns 403 almost always
     "academia.edu",  # added: consistently returns 403 for automated requests
+    "quora.com",     # added: quora redirects bots to login page, not useful to check
 }
 
 DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
@@ -91,6 +92,4 @@ async def check_url(
     except aiohttp.ClientResponseError as exc:
         if exc.status == 405:
             try:
-                async with session.get(
-                    url,
-                    headers=headers,
+                async wi
