@@ -37,6 +37,7 @@ SKIP_DOMAINS = {
     "geeksforgeeks.org",  # added: frequently returns 403 for headless requests
     "docs.oracle.com",   # added: oracle docs intermittently 403 on automated requests
     "dev.to",            # added: dev.to started returning 429 for rapid automated checks
+    "freecodecamp.org",  # added: returns 403 for automated requests in my testing
 }
 
 DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
@@ -86,8 +87,4 @@ async def check_url(
         async with session.head(
             url,
             headers=headers,
-            timeout=aiohttp.ClientTimeout(total=timeout),
-            allow_redirects=True,
-            ssl=False,
-        ) as resp:
-  
+            timeout=aiohttp.ClientTimeout(tota
