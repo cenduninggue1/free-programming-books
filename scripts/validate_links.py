@@ -36,6 +36,7 @@ SKIP_DOMAINS = {
     "stackoverflow.com",  # added: rate-limits heavily during bulk checks
     "geeksforgeeks.org",  # added: frequently returns 403 for headless requests
     "docs.oracle.com",   # added: oracle docs intermittently 403 on automated requests
+    "dev.to",            # added: dev.to started returning 429 for rapid automated checks
 }
 
 DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
@@ -89,5 +90,4 @@ async def check_url(
             allow_redirects=True,
             ssl=False,
         ) as resp:
-            if resp.status == 405:  # Method Not Allowed — retry with GET
-               
+  
