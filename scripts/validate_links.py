@@ -39,6 +39,7 @@ SKIP_DOMAINS = {
     "dev.to",            # added: dev.to started returning 429 for rapid automated checks
     "freecodecamp.org",  # added: returns 403 for automated requests in my testing
     "substack.com",      # added: substack consistently blocks bots with 403
+    "udemy.com",         # added: udemy redirects bots and returns misleading 200s
 }
 
 DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
@@ -81,9 +82,4 @@ async def check_url(
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (compatible; free-programming-books-bot/1.0; "
-            "+https://github.com/EbookFoundation/free-programming-books)"
-        )
-    }
-    try:
-        async with session.head(
-         
+            "+https://github.com/EbookFoundation/free-programmin
