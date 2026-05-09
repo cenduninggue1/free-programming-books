@@ -41,6 +41,7 @@ SKIP_DOMAINS = {
     "substack.com",      # added: substack consistently blocks bots with 403
     "udemy.com",         # added: udemy redirects bots and returns misleading 200s
     "npmjs.com",         # added: npm registry pages return 503 under bot detection
+    "towardsdatascience.com",  # added: medium-hosted, same bot-blocking behaviour
 }
 
 DEFAULT_TIMEOUT = 20  # bumped from 15s — my connection is slower, avoids false positives
@@ -80,8 +81,4 @@ async def check_url(
 
     Returns (url, status_code, error_message).
     """
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (compatible; free-programmin"
-        )
-    }
+    heade
